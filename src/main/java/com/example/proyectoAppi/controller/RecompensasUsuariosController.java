@@ -23,7 +23,6 @@ public class RecompensasUsuariosController {
 
     private final RecompensasUsuariosService recompensasUsuariosService;
 
-    // 📌 ASIGNAR RECOMPENSA A UN USUARIO
     @PostMapping("/usuario/{idUsuario}/recompensa/{idRecompensa}")
     @Operation(summary = "Asignar recompensa a un usuario", description = "Asigna una recompensa específica a un usuario")
     @ApiResponses(value = {
@@ -46,7 +45,6 @@ public class RecompensasUsuariosController {
         }
     }
 
-    // 📌 OBTENER TODAS LAS RECOMPENSAS ASIGNADAS
     @GetMapping
     @Operation(summary = "Obtener todas las recompensas asignadas", description = "Devuelve todas las recompensas asignadas a los usuarios")
     @ApiResponses(value = {
@@ -58,7 +56,6 @@ public class RecompensasUsuariosController {
         return recompensas.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(recompensas);
     }
 
-    // 📌 OBTENER RECOMPENSAS POR USUARIO
     @GetMapping("/usuario/{idUsuario}")
     @Operation(summary = "Obtener recompensas de un usuario", description = "Devuelve todas las recompensas asignadas a un usuario específico")
     @ApiResponses(value = {

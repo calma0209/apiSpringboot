@@ -1,6 +1,7 @@
 package com.example.proyectoAppi.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class DiarioService {
 
     public List<Diario> obtenerTodosLosRegistros() {
         return diarioR.findAll();
+    }
+
+    public Optional<Diario> obtenerRegistroById(Integer id) {
+        return diarioR.findById(id);
     }
 
     public List<Diario> obtenerDiarioPorUsuario(Integer idUsuario) {

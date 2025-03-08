@@ -18,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 public class EmocionService {
     private final EmocionRepository emocionR;
 
-    public void crearEmocion(Emocion emotion) {
-        emocionR.save(emotion);
+    public Emocion crearEmocion(Emocion emotion) {
+        return emocionR.save(emotion);
     }
 
     public List<Emocion> getAllEmociones() {

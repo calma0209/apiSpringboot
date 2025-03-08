@@ -18,8 +18,8 @@ public class RecompensaService {
 
     private final RecompensaRepository recompensaRepository;
 
-    public void crearRecompensa(Recompensa recompensa) {
-        recompensaRepository.save(recompensa);
+    public Recompensa crearRecompensa(Recompensa recompensa) {
+        return recompensaRepository.save(recompensa);
     }
 
     public List<Recompensa> obtenerTodasRecompensas() {
