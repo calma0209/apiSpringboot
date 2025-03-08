@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class usuarioController {
 
     private final usuarioService userS;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario", description = "Registra un nuevo usuario en la base de datos")
@@ -30,6 +32,13 @@ public class usuarioController {
             @ApiResponse(responseCode = "400", description = "Error en la solicitud")
     })
     public ResponseEntity<usuario> crearUsuario(@RequestBody usuario user) {
+
+        if (userS.findByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        user.setContraseña(passwordEncoder.encode(user.getContraseña()));
+
         usuario nuevoUsuario = userS.crearUsuario(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
     }

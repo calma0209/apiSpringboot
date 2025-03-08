@@ -30,6 +30,10 @@ public class usuarioService {
         return usuarioR.findById(id);
     }
 
+    public Optional<usuario> findByEmail(String email) {
+        return usuarioR.findByEmail(email);
+    }
+
     public usuario updateUsuario(Integer id, usuario newUsuario) {
         return usuarioR.findById(id)
                 .map(user -> {

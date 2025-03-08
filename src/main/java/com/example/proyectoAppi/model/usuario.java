@@ -47,6 +47,7 @@ public class usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<RecompensasUsuarios> recompensasList;
+
 }
 
 enum Rol {
