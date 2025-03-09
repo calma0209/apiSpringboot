@@ -41,22 +41,30 @@ public class usuarioService {
         return passwordEncoder.matches(rawPassword, hashedPassword);
     }
 
-    public usuario updateUsuario(Integer id, usuario newUsuario, String contrasenaActual) {
+    public usuario updateUsuario(Integer id, usuario newUsuario) {
         return usuarioR.findById(id)
                 .map(user -> {
 
+                    // 🔹 Verificar si el email ya existe en otro usuario
                     if (!user.getEmail().equals(newUsuario.getEmail())
                             && usuarioR.findByEmail(newUsuario.getEmail()).isPresent()) {
                         throw new RuntimeException("El email ya está registrado.");
                     }
 
+                    // 🔹 Actualizar nombre y email
                     user.setNombre_usuario(newUsuario.getNombre_usuario());
                     user.setEmail(newUsuario.getEmail());
 
-                    if (newUsuario.getContraseña() != null && !newUsuario.getContraseña().isEmpty()) {
-                        if (!passwordEncoder.matches(contrasenaActual, user.getContraseña())) {
+                    // 🔹 Verificar si el usuario envió la contraseña actual antes de cambiarla
+                    if (newUsuario.getContraseña_actual() != null && !newUsuario.getContraseña_actual().isEmpty() &&
+                            newUsuario.getContraseña() != null && !newUsuario.getContraseña().isEmpty()) {
+
+                        // 🔹 Validar si la contraseña actual ingresada coincide con la almacenada
+                        if (!passwordEncoder.matches(newUsuario.getContraseña_actual(), user.getContraseña())) {
                             throw new RuntimeException("La contraseña actual es incorrecta.");
                         }
+
+                        // 🔹 Hashear y actualizar la nueva contraseña
                         user.setContraseña(passwordEncoder.encode(newUsuario.getContraseña()));
                     }
 

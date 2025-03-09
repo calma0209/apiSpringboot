@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @AllArgsConstructor
@@ -25,6 +26,10 @@ public class usuario {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Transient
+    @JsonProperty("contraseña_actual")
+    private String contraseña_actual;
 
     @Column(nullable = false)
     private String contraseña;

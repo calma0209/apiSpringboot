@@ -82,10 +82,9 @@ public class usuarioController {
             @ApiResponse(responseCode = "404", description = "usuario no encontrado"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
     })
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody usuario user,
-            @RequestParam(required = false) String contrasenaActual) {
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody usuario user) {
         try {
-            usuario usuarioActualizado = userS.updateUsuario(id, user, contrasenaActual);
+            usuario usuarioActualizado = userS.updateUsuario(id, user);
             return ResponseEntity.ok(usuarioActualizado);
         } catch (RuntimeException e) {
             if (e.getMessage().equals("usuario no encontrado")) {
