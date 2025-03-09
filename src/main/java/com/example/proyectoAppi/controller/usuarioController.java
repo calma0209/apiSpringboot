@@ -13,6 +13,8 @@ import com.example.proyectoAppi.model.usuario;
 import com.example.proyectoAppi.service.usuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,11 @@ public class usuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
     }
 
+    @Operation(summary = "Iniciar sesión", description = "Verifica las credenciales del usuario y devuelve sus datos si son correctas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario autenticado correctamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = usuario.class))),
+            @ApiResponse(responseCode = "401", description = "Credenciales incorrectas", content = @Content(mediaType = "text/plain"))
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Optional<usuario> usuario = userS.findByEmail(request.getEmail());

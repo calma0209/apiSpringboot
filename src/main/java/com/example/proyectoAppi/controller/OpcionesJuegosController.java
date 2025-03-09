@@ -23,7 +23,7 @@ public class OpcionesJuegosController {
 
     private final OpcionesJuegosService opcionesJuegosService;
 
-    // 📌 CREAR OPCIÓN SIN EMOCIÓN
+    // CREAR OPCIÓN SIN EMOCIÓN
     @PostMapping("/pregunta/{idPregunta}")
     @Operation(summary = "Crear una opción sin emoción", description = "Registra una opción de respuesta sin asociar a una emoción")
     @ApiResponses(value = {
@@ -43,7 +43,7 @@ public class OpcionesJuegosController {
         }
     }
 
-    // 📌 CREAR OPCIÓN ASOCIADA A UNA EMOCIÓN
+    // CREAR OPCIÓN ASOCIADA A UNA EMOCIÓN
     @PostMapping("/pregunta/{idPregunta}/emocion/{idEmocion}")
     @Operation(summary = "Crear una opción asociada a una emoción", description = "Registra una opción de respuesta vinculada a una emoción específica")
     @ApiResponses(value = {
@@ -65,7 +65,7 @@ public class OpcionesJuegosController {
         }
     }
 
-    // 📌 OBTENER TODAS LAS OPCIONES
+    // OBTENER TODAS LAS OPCIONES
     @GetMapping
     @Operation(summary = "Obtener todas las opciones", description = "Devuelve una lista de todas las opciones registradas")
     @ApiResponses(value = {
@@ -77,7 +77,7 @@ public class OpcionesJuegosController {
         return opciones.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(opciones);
     }
 
-    // 📌 OBTENER OPCIONES POR ID DE PREGUNTA
+    // OBTENER OPCIONES POR ID DE PREGUNTA
     @GetMapping("/pregunta/{idPregunta}")
     @Operation(summary = "Obtener opciones por pregunta", description = "Devuelve todas las opciones de respuesta asociadas a una pregunta específica")
     @ApiResponses(value = {
@@ -89,7 +89,7 @@ public class OpcionesJuegosController {
         return opciones.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).build() : ResponseEntity.ok(opciones);
     }
 
-    // 📌 ACTUALIZAR OPCIÓN POR ID
+    // ACTUALIZAR OPCIÓN POR ID
     @PutMapping("/{idOpcion}")
     @Operation(summary = "Actualizar opción de juego", description = "Actualiza los datos de una opción de juego por su ID")
     @ApiResponses(value = {
@@ -109,7 +109,7 @@ public class OpcionesJuegosController {
         }
     }
 
-    // 📌 ELIMINAR OPCIÓN POR ID
+    // ELIMINAR OPCIÓN POR ID
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar opción", description = "Elimina una opción por su ID si existe")
     @ApiResponses(value = {

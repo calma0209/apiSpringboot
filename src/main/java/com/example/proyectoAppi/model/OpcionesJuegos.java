@@ -27,12 +27,12 @@ public class OpcionesJuegos {
 
     @ManyToOne
     @JoinColumn(name = "id_pregunta", nullable = false)
-    @JsonIgnore
+    // @JsonIgnore
     private PreguntaJuego preguntaJuego;
 
     @ManyToOne
     @JoinColumn(name = "id_emocion")
-    @JsonIgnore
+    // @JsonIgnore
     private Emocion emocion;
 
     @Column(nullable = false)
