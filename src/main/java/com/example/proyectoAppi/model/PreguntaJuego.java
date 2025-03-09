@@ -31,7 +31,7 @@ public class PreguntaJuego {
 
     @ManyToOne
     @JoinColumn(name = "id_juego", nullable = false)
-    @JsonIgnore
+    // @JsonIgnore
     private Juego juego;
 
     @Column(columnDefinition = "TEXT")
