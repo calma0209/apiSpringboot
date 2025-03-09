@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,7 +27,7 @@ public class usuarioController {
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario", description = "Registra un nuevo usuario en la base de datos")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario creado correctamente"),
+            @ApiResponse(responseCode = "201", description = "usuario creado correctamente"),
             @ApiResponse(responseCode = "400", description = "Error en la solicitud")
     })
     public ResponseEntity<usuario> crearUsuario(@RequestBody usuario user) {
@@ -66,43 +65,49 @@ public class usuarioController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener usuario por ID", description = "Devuelve un usuario específico por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "usuario no encontrado")
     })
     public ResponseEntity<usuario> obtenerUsuario(@PathVariable Integer id) {
         return userS.getUsuarioById(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Usuario con ID " + id + " no encontrado"));
+                        "usuario con ID " + id + " no encontrado"));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario por su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+            @ApiResponse(responseCode = "200", description = "usuario actualizado correctamente"),
+            @ApiResponse(responseCode = "404", description = "usuario no encontrado"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
     })
-    public ResponseEntity<usuario> actualizarUsuario(@PathVariable Integer id, @RequestBody usuario user) {
-        Optional<usuario> usuarioExiste = userS.getUsuarioById(id);
-
-        if (usuarioExiste.isPresent()) {
-            usuario actualizado = userS.updateUsuario(id, user);
-            return ResponseEntity.ok(actualizado);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario con ID " + id + " no encontrado");
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody usuario user,
+            @RequestParam(required = false) String contrasenaActual) {
+        try {
+            usuario usuarioActualizado = userS.updateUsuario(id, user, contrasenaActual);
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("usuario no encontrado")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            } else if (e.getMessage().equals("La contraseña actual es incorrecta.")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            } else if (e.getMessage().equals("El email ya está registrado.")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar usuario", description = "Elimina un usuario por su ID si existe")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Usuario eliminado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "204", description = "usuario eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "usuario no encontrado")
     })
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
         if (!userS.getUsuarioById(id).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario con ID " + id + " no encontrado");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "usuario con ID " + id + " no encontrado");
         }
         userS.deleteUsuario(id);
         return ResponseEntity.noContent().build();

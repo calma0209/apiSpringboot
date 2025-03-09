@@ -41,12 +41,25 @@ public class usuarioService {
         return passwordEncoder.matches(rawPassword, hashedPassword);
     }
 
-    public usuario updateUsuario(Integer id, usuario newUsuario) {
+    public usuario updateUsuario(Integer id, usuario newUsuario, String contrasenaActual) {
         return usuarioR.findById(id)
                 .map(user -> {
+
+                    if (!user.getEmail().equals(newUsuario.getEmail())
+                            && usuarioR.findByEmail(newUsuario.getEmail()).isPresent()) {
+                        throw new RuntimeException("El email ya está registrado.");
+                    }
+
                     user.setNombre_usuario(newUsuario.getNombre_usuario());
                     user.setEmail(newUsuario.getEmail());
-                    user.setContraseña(newUsuario.getContraseña());
+
+                    if (newUsuario.getContraseña() != null && !newUsuario.getContraseña().isEmpty()) {
+                        if (!passwordEncoder.matches(contrasenaActual, user.getContraseña())) {
+                            throw new RuntimeException("La contraseña actual es incorrecta.");
+                        }
+                        user.setContraseña(passwordEncoder.encode(newUsuario.getContraseña()));
+                    }
+
                     user.setRol(newUsuario.getRol());
                     return usuarioR.save(user);
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
