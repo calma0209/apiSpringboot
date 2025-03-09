@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.proyectoAppi.model.LoginRequest;
 import com.example.proyectoAppi.model.usuario;
 import com.example.proyectoAppi.service.usuarioService;
 
@@ -23,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class usuarioController {
 
     private final usuarioService userS;
-    private final PasswordEncoder passwordEncoder;
 
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario", description = "Registra un nuevo usuario en la base de datos")
@@ -37,10 +37,19 @@ public class usuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-        user.setContraseña(passwordEncoder.encode(user.getContraseña()));
-
         usuario nuevoUsuario = userS.crearUsuario(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        Optional<usuario> usuario = userS.findByEmail(request.getEmail());
+
+        if (usuario.isPresent() && userS.verificarContraseña(request.getContraseña(), usuario.get().getContraseña())) {
+            return ResponseEntity.ok(usuario.get()); // Devolver datos del usuario autenticado
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
     }
 
     @GetMapping

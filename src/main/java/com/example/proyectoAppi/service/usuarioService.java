@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,8 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class usuarioService {
 
     private final usuarioRepository usuarioR;
+    private final PasswordEncoder passwordEncoder;
 
     public usuario crearUsuario(usuario user) {
+        user.setContraseña(passwordEncoder.encode(user.getContraseña()));
         return usuarioR.save(user);
     }
 
@@ -32,6 +35,10 @@ public class usuarioService {
 
     public Optional<usuario> findByEmail(String email) {
         return usuarioR.findByEmail(email);
+    }
+
+    public boolean verificarContraseña(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
     }
 
     public usuario updateUsuario(Integer id, usuario newUsuario) {
